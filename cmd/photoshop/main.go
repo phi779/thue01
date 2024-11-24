@@ -39,7 +39,7 @@ type ProfileStatus struct {
 }
 
 const (
-	TelegramBotToken = "7944937404:AAFGYLrLSBzkB2t0k03KG953KLFsjYhKyQE"
+	TelegramBotToken = "7695396904:AAF1yzMdIjkfiJAswS3Jmm3y_vig2uXbBJU"
 	TelegramChatID   = "-4519860005"
 )
 
